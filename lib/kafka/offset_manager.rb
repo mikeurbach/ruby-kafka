@@ -55,7 +55,7 @@ module Kafka
           partitions.map {|partition, offset| "#{topic}/#{partition}:#{offset}" }
         }.join(", ")
 
-        @logger.info "Committing offsets: #{pretty_offsets}"
+        @logger.debug "Committing offsets: #{pretty_offsets}"
 
         @group.commit_offsets(@processed_offsets)
 
