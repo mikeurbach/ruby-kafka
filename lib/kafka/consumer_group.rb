@@ -77,7 +77,7 @@ module Kafka
     end
 
     def heartbeat
-      @logger.info "Sending heartbeat..."
+      @logger.debug "Sending heartbeat..."
 
       response = coordinator.heartbeat(
         group_id: @group_id,
