@@ -171,9 +171,9 @@ module Kafka
     #   The original exception will be returned by calling `#cause` on the
     #   {Kafka::ProcessingError} instance.
     # @return [nil]
-    def each_message(min_bytes: 1, max_wait_time: 5)
+    def each_message(min_bytes: 1, max_wait_time: 5, api_version: nil)
       consumer_loop do
-        batches = fetch_batches(min_bytes: min_bytes, max_wait_time: max_wait_time)
+        batches = fetch_batches(min_bytes: min_bytes, max_wait_time: max_wait_time, api_version: api_version)
 
         batches.each do |batch|
           batch.messages.each do |message|
@@ -231,9 +231,9 @@ module Kafka
     #   returning messages from the server, in seconds.
     # @yieldparam batch [Kafka::FetchedBatch] a message batch fetched from Kafka.
     # @return [nil]
-    def each_batch(min_bytes: 1, max_wait_time: 5)
+    def each_batch(min_bytes: 1, max_wait_time: 5, api_version: nil)
       consumer_loop do
-        batches = fetch_batches(min_bytes: min_bytes, max_wait_time: max_wait_time)
+        batches = fetch_batches(min_bytes: min_bytes, max_wait_time: max_wait_time, api_version: api_version)
 
         batches.each do |batch|
           unless batch.empty?
@@ -315,7 +315,7 @@ module Kafka
       end
     end
 
-    def fetch_batches(min_bytes:, max_wait_time:)
+    def fetch_batches(min_bytes:, max_wait_time:, api_version:)
       join_group unless @group.member?
 
       assigned_partitions = @group.assigned_partitions
@@ -329,6 +329,7 @@ module Kafka
         logger: @logger,
         min_bytes: min_bytes,
         max_wait_time: max_wait_time,
+        api_version: api_version
       )
 
       assigned_partitions.each do |topic, partitions|
