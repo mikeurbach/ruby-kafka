@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ruby-kafka (0.3.15.beta3)
+    ruby-kafka (0.3.15.beta4)
 
 GEM
   remote: https://rubygems.org/
@@ -80,4 +80,4 @@ DEPENDENCIES
   timecop
 
 BUNDLED WITH
-   1.10.6
+   1.12.5

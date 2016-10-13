@@ -74,6 +74,7 @@ describe Kafka::Broker do
       actual_response = broker.fetch_messages(
         max_wait_time: 0,
         min_bytes: 0,
+        api_version: 0,
         topics: {}
       )
 
