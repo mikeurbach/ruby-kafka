@@ -238,6 +238,8 @@ module Kafka
 
         batches.each do |batch|
           unless batch.empty?
+            batch_succeeded = false
+
             @instrumenter.instrument("process_batch.consumer") do |notification|
               notification.update(
                 topic: batch.topic,
@@ -248,7 +250,7 @@ module Kafka
               )
 
               begin
-                yield batch
+                batch_succeeded = (yield batch) != false
               rescue => e
                 offset_range = batch.empty? ? "N/A" : [batch.first_offset, batch.last_offset].join("..")
                 location = "#{batch.topic}/#{batch.partition} in offset range #{offset_range}"
@@ -260,7 +262,7 @@ module Kafka
               end
             end
 
-            mark_message_as_processed(batch.messages.last)
+            mark_message_as_processed(batch.messages.last) if batch_succeeded
           end
 
           @offset_manager.commit_offsets_if_necessary
